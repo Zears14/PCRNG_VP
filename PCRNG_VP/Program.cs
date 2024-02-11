@@ -78,7 +78,7 @@ namespace PCRNG_VP
 		}
 
         /// <summary>
-        /// Starts the program.
+        /// Starts the main program.
         /// </summary>
         static void Start()
 		{
