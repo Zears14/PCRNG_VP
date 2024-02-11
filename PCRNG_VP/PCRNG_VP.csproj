@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="$(SolutionDir)\packages\MSBuildTasks.1.5.0\build\net46\MSBuild.Community.Tasks.targets" Condition="Exists('$(SolutionDir)\packages\MSBuildTasks.1.5.0\build\net46\MSBuild.Community.Tasks.targets')" />
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PublishAot>False</PublishAot>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AssemblyMajorVersion>0</AssemblyMajorVersion>
+		<AssemblyMinorVersion>0</AssemblyMinorVersion>
+		<AssemblyBuildNumber>0</AssemblyBuildNumber>
+		<AssemblyRevision>0</AssemblyRevision>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Colorful.Console" Version="1.2.15" />
+		<PackageReference Include="MSBuildTasks" Version="1.5.0.235">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Management" Version="8.0.0" />
+	</ItemGroup>
+	<Target Name="BeforeBuild">
+		<Message Text="Updating version..." />
+		<AssemblyInfo CodeLanguage="CS"
+					  OutputFile="Properties\AssemblyInfo.cs"
+					  AssemblyVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)"
+					  AssemblyFileVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)"
+					  AssemblyInformationalVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" />
+		<Message Text="Version updated to $(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" />
+	</Target>
+</Project>
