@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -192,34 +194,56 @@ namespace PCRNG_VP.exTPM
             Log("Finished, You may unplug the USB stick", extra: ": UMNTEXTPM");
             return true;
         }
-        static void Log(string message, int severity = 0, string extra = "")
+        public enum LogLevel
+        {
+            INFO,
+            WARN,
+            ERROR
+        }
+
+        public static void Log(string message, LogLevel severity = LogLevel.INFO, string extra = "")
         {
             if (string.IsNullOrEmpty(message))
             {
-                throw new ArgumentNullException(nameof(message), $"'{nameof(message)}' cannot be null or empty.");
+                throw new ArgumentNullException(nameof(message), "Message cannot be null or empty.");
             }
 
-            if (severity == 0)
-            {
-                Console.Write($"[TPM][INFO{extra}] ", System.Drawing.Color.DarkCyan);
-                Console.Write(message + "\n");
-            }
-            else if (severity == 1)
-            {
-                Console.Write($"[TPM][WARN{extra}] ", System.Drawing.Color.Yellow);
-                Console.Write(message + "\n");
-            }
-            else if (severity == 2)
-            {
-                Console.Write($"[TPM][ERROR{extra}] ", System.Drawing.Color.Red);
-                Console.Write(message + "\n");
-            }
+            string logMessage = $"{DateTime.Now:s} [TPM][{severity}{extra}]: {message}";
+
+            Console.WriteLine(logMessage, GetConsoleColor(severity));
+            Console.ResetColor();
+
+            Program.Logs.Add(logMessage);
         }
-        static void HandleError(Exception ex)
+
+        public static void LogSilent(string message, LogLevel severity = LogLevel.INFO, string extra = "")
         {
-            Log(ex.Message, 2, ": " + ex.GetType().ToString());
-            if (ex.StackTrace != null) { Log("\n" + ex.StackTrace.ToString(), extra: ": " + "STACK TRACE (" + ex.GetType().ToString() + ")"); }
-            else { Log("Unable to get stack trace!", 1); }
+            if (string.IsNullOrEmpty(message))
+            {
+                throw new ArgumentNullException(nameof(message), "Message cannot be null or empty.");
+            }
+
+            string logMessage = $"{DateTime.Now:s} [TPM][{severity}{extra}]: {message}";
+
+            Program.Logs.Add(logMessage);
+        }
+
+        public static void HandleError(Exception ex)
+        {
+            Log(ex.Message, LogLevel.ERROR, ": " + ex.GetType().ToString());
+            Log(ex.StackTrace ?? "Unable to get stack trace!", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            Log("END STACK TRACE", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+        }
+
+        private static Color GetConsoleColor(LogLevel severity)
+        {
+            return severity switch
+            {
+                LogLevel.INFO => Color.DarkCyan,
+                LogLevel.WARN => Color.Yellow,
+                LogLevel.ERROR => Color.Red,
+                _ => Color.White
+            };
 
         }
     }
