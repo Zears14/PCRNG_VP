@@ -67,7 +67,7 @@ namespace PCRNG_VP
 					RedirectStandardOutput = true,
 					UseShellExecute = false,
 					CreateNoWindow = true,
-					Arguments = CurrentDir+@"\FS"+guid+" "+"/D"
+					Arguments = CurrentDir+@"\FS"+guid+" /D"
 				}
 			};
 
