@@ -7,13 +7,15 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Console = Colorful.Console;
+using Spectre.Console;
+using System.Text.Json.Nodes;
 
 
 namespace PCRNG_VP
 {
     internal static class Program
     {
-        private static readonly string LogFilePath = $"log_{DateTime.Now:yyyy-MM-dd-HH_mm_ss_fffffff}.txt";
+        private static readonly string LogFilePath = $"log_{DateTime.Now:yyyy-MM-dd-HH_mm_ss_fffffff}.log";
 #pragma warning disable S2223 // Non-constant static fields should not be visible
         public static List<string> Logs = new List<string>();
 #pragma warning restore S2223 // Non-constant static fields should not be visible
@@ -53,7 +55,17 @@ namespace PCRNG_VP
 #endif
                 Log("DONE", extra: ": INIT");
                 Console.Clear();
-                Start();
+                string userchoices = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title("[bold]Welcome to[/][bold cyan1] Picrypt Next[/][bold] Vault App (PCNRNG_VP)![/]")
+                            .PageSize(3)
+                            .AddChoices("Start", "Exit"));
+
+                if (userchoices != null && userchoices == "Start")
+                {
+                    Start();
+                }
+
             }
             catch (Exception ex)
             {
@@ -96,7 +108,7 @@ namespace PCRNG_VP
             process.Start();
             process.WaitForExit();
 
-            LogSilent("Deleting mountpints", extra: ": CLNUP");
+            LogSilent("Deleting mountpoints", extra: ": CLNUP");
             Directory.Delete(CurrentDir + @"\FS", true);
             LogSilent("Saving logs", extra: ": CLNUP");
             foreach (string Log in Logs)
@@ -112,19 +124,64 @@ namespace PCRNG_VP
         /// </summary>
         static void Start()
         {
-            Console.WriteLine("Start? (y/n):", System.Drawing.Color.White);
-            string startInput = Console.ReadLine()?.ToLowerInvariant() ?? "n";
-            if (startInput != "y")
-            {
-                LogSilent("User chose to exit!", extra: ": SRTINPUT0");
-                Console.WriteLine("Alright, exiting...", System.Drawing.Color.Green);
-                return;
-            }
-            Log("Setting up exTPM...", extra: ": SRTTPMSETUP");
+
+
+            Log("Setting up exTPM...", extra: ": TPMSETUP");
             exTPM.Basic.SetupConnection();
-            Console.WriteLine("Unmount them? (y/n):", System.Drawing.Color.White);
-            string userInput = Console.ReadLine()?.ToLowerInvariant() ?? "n";
-            if (userInput == "y")
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            GuidAttribute? guidAttribute = assembly.GetCustomAttribute<GuidAttribute>();
+            string guid = guidAttribute?.Value ?? throw new NotImplementedException("Assembly GUID is not found");
+            string CurrentDir = Directory.GetCurrentDirectory();
+
+            //Directory Variable
+            string MountDir = Path.Combine(CurrentDir, "FS", guid);
+            string sksMountDir = Path.Combine(MountDir, "SKS");
+            string appTPMpath = Path.Combine(sksMountDir, guid);
+            string keyPath = Path.Combine(appTPMpath, "keys");
+            //File Path Variable
+            string key_metadata = Path.Combine(appTPMpath, "key_metadata.json");
+            string app_metadata = Path.Combine(appTPMpath, "app_metadata.json");
+            string privateKeyPem = Path.Combine(keyPath, "encrypted_private_key.pem");
+
+
+            if (!Directory.Exists(appTPMpath))
+            {
+                Log("App TPM folder not found, creating...", extra: ": TPMSETUP", severity: LogLevel.WARN);
+                Directory.CreateDirectory(appTPMpath);
+            }
+            if (!Directory.Exists(keyPath))
+            {
+                Log("App TPM Keys folder not found, creating...", extra: ": TPMSETUP", severity: LogLevel.WARN);
+                Directory.CreateDirectory(keyPath);
+            }
+            if (!File.Exists(key_metadata))
+            {
+                Log("App TPM keys_metadata.json not found, creating...", extra: ": TPMSETUP", severity: LogLevel.WARN);
+                //TODO: Create and Fill the key_metadata.json
+                using (FileStream fs = File.Create(key_metadata))
+                {
+                    fs.Close();
+                }
+            }
+            if (!File.Exists(app_metadata))
+            {
+                //TODO: Create and Fill the app_metadata.json
+                Log("App TPM app_metadata.json not found, creating...", extra: ": TPMSETUP", severity: LogLevel.WARN);
+
+                using (FileStream fs = File.Create(app_metadata))
+                {
+                    fs.Close();
+                }
+            }
+            if (!File.Exists(privateKeyPem))
+            {
+                //TODO:Do keygen
+                Log("App TPM Private Keys not found (BAD), skipping...", extra: ": TPMSETUP", severity: LogLevel.WARN);
+
+            }
+
+            if (AnsiConsole.Confirm("[bold maroon] Unmount them?[/]"))
             {
                 exTPM.Basic.CloseConnection();
             }
@@ -168,9 +225,10 @@ namespace PCRNG_VP
 
         public static void HandleError(Exception ex)
         {
-            Log(ex.Message, LogLevel.ERROR, ": " + ex.GetType().ToString());
-            Log(ex.StackTrace ?? "Unable to get stack trace!", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
-            Log("END STACK TRACE", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            LogSilent(ex.Message, LogLevel.ERROR, ": " + ex.GetType().ToString());
+            LogSilent(ex.StackTrace ?? "Unable to get stack trace!", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            LogSilent("END STACK TRACE", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenPaths);
         }
 
         private static void WriteToFile(string logMessage)
@@ -189,14 +247,14 @@ namespace PCRNG_VP
         }
 
 
-        private static Color GetConsoleColor(LogLevel severity)
+        private static System.Drawing.Color GetConsoleColor(LogLevel severity)
         {
             return severity switch
             {
-                LogLevel.INFO => Color.DarkCyan,
-                LogLevel.WARN => Color.Yellow,
-                LogLevel.ERROR => Color.Red,
-                _ => Color.White
+                LogLevel.INFO => System.Drawing.Color.DarkCyan,
+                LogLevel.WARN => System.Drawing.Color.Yellow,
+                LogLevel.ERROR => System.Drawing.Color.Red,
+                _ => System.Drawing.Color.White
             };
         }
     }

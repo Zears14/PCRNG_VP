@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -230,19 +231,20 @@ namespace PCRNG_VP.exTPM
 
         public static void HandleError(Exception ex)
         {
-            Log(ex.Message, LogLevel.ERROR, ": " + ex.GetType().ToString());
-            Log(ex.StackTrace ?? "Unable to get stack trace!", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
-            Log("END STACK TRACE", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            LogSilent(ex.Message, LogLevel.ERROR, ": " + ex.GetType().ToString());
+            LogSilent(ex.StackTrace ?? "Unable to get stack trace!", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            LogSilent("END STACK TRACE", LogLevel.ERROR, ": STACK TRACE (" + ex.GetType().ToString() + ")");
+            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenPaths);
         }
 
-        private static Color GetConsoleColor(LogLevel severity)
+        private static System.Drawing.Color GetConsoleColor(LogLevel severity)
         {
             return severity switch
             {
-                LogLevel.INFO => Color.DarkCyan,
-                LogLevel.WARN => Color.Yellow,
-                LogLevel.ERROR => Color.Red,
-                _ => Color.White
+                LogLevel.INFO => System.Drawing.Color.DarkCyan,
+                LogLevel.WARN => System.Drawing.Color.Yellow,
+                LogLevel.ERROR => System.Drawing.Color.Red,
+                _ => System.Drawing.Color.White
             };
 
         }

@@ -22,15 +22,12 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Spectre.Console" Version="0.48.0" />
 		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
 	<Target Name="BeforeBuild">
 		<Message Text="Updating version..." />
-		<AssemblyInfo CodeLanguage="CS"
-					  OutputFile="Properties\AssemblyInfo.cs"
-					  AssemblyVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)"
-					  AssemblyFileVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)"
-					  AssemblyInformationalVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="Properties\AssemblyInfo.cs" AssemblyVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" AssemblyFileVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" AssemblyInformationalVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" />
 		<Message Text="Version updated to $(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)" />
 	</Target>
 </Project>

@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("F34BA97A-80E6-4FB0-857E-86ED8B11A51A")]
 
-[assembly: AssemblyDescription("Description of your application")]
-[assembly: AssemblyCopyright("Copyright © Your company")]
+[assembly: AssemblyDescription("Vault app, and an implementation of an encryption key.")]
+[assembly: AssemblyCopyright("Copyright © Zears14")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
