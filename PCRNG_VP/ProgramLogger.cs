@@ -16,11 +16,19 @@ namespace PCRNG_VP
 
         public enum LogLevel
         {
+            DEBUG,
             INFO,
             WARN,
             ERROR
         }
 
+        /// <summary>
+        /// Logs the specified message.
+        /// </summary>
+        /// <param name="message">The message of the logs.</param>
+        /// <param name="severity">The severity of the logs (Default to INFO).</param>
+        /// <param name="extra">Extra Logs message.</param>
+        /// <exception cref="ArgumentNullException">message - Message cannot be null or empty.</exception>
         public static void Log(string message, LogLevel severity = LogLevel.INFO, string extra = "")
         {
             if (string.IsNullOrEmpty(message))
@@ -36,6 +44,13 @@ namespace PCRNG_VP
             ProgramLogger.Logs.Add(logMessage);
         }
 
+        /// <summary>
+        /// Logs silently the specified message.
+        /// </summary>
+        /// <param name="message">The message of the logs.</param>
+        /// <param name="severity">The severity of the logs (Default to INFO).</param>
+        /// <param name="extra">Extra Logs message.</param>
+        /// <exception cref="ArgumentNullException">message - Message cannot be null or empty.</exception>
         public static void LogSilent(string message, LogLevel severity = LogLevel.INFO, string extra = "")
         {
             if (string.IsNullOrEmpty(message))
@@ -48,6 +63,10 @@ namespace PCRNG_VP
             ProgramLogger.Logs.Add(logMessage);
         }
 
+        /// <summary>
+        /// Handles the error.
+        /// </summary>
+        /// <param name="ex">The error to be handled.</param>
         public static void HandleError(Exception ex)
         {
             LogSilent(ex.Message, LogLevel.ERROR, ": " + ex.GetType().ToString());
@@ -60,6 +79,7 @@ namespace PCRNG_VP
         {
             return severity switch
             {
+                LogLevel.DEBUG => System.Drawing.Color.WhiteSmoke,
                 LogLevel.INFO => System.Drawing.Color.DarkCyan,
                 LogLevel.WARN => System.Drawing.Color.Yellow,
                 LogLevel.ERROR => System.Drawing.Color.Red,

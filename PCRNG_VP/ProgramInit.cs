@@ -8,6 +8,10 @@ namespace PCRNG_VP
 {
     public static class ProgramInit
     {
+        /// <summary>
+        /// Does the initialization.
+        /// </summary>
+        /// <exception cref="System.NotImplementedException">Assembly GUID is not found</exception>
         public static void DoInit()
         {
             AppDomain.CurrentDomain.ProcessExit += ProgramEventsHandler.CurrentDomain_ProcessExit;
@@ -29,11 +33,11 @@ namespace PCRNG_VP
             string MountDir = Path.Combine(CurrentDir, "FS", guid);
             Directory.CreateDirectory(MountDir);
 #if DEBUG
-            Console.WriteLine(guid);
-            Console.WriteLine(CurrentDir);
-            Console.WriteLine(MountDir);
+            Log($"Application GUID: {guid}", LogLevel.DEBUG, ": INIT-DEBUG-TIME");
+            Log($"Application Current Directory: {CurrentDir}", LogLevel.DEBUG, ": INIT-DEBUG-TIME");
+            Log($"Application Mount Directory: {MountDir}", LogLevel.DEBUG, ": INIT-DEBUG-TIME");
             Console.ReadKey();
-            Log("(DEBUG) Continue-ing program...", extra: ": INIT");
+            Log("INIT-DEBUG-TIME complete, Resuming program init...", extra: ": INIT-DEBUG-TIME", severity: LogLevel.DEBUG);
 #endif
             Log("DONE", extra: ": INIT");
             

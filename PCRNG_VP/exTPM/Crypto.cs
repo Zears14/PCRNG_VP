@@ -14,6 +14,11 @@ namespace PCRNG_VP.exTPM
 {
     public static class Crypto
     {
+        /// <summary>
+        /// Generate random bytes.
+        /// </summary>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
         public static byte[] GenerateRandomBytes(int length)
         {
             byte[] randomBytes = new byte[length];
@@ -24,6 +29,12 @@ namespace PCRNG_VP.exTPM
             return randomBytes;
         }
 
+        /// <summary>
+        /// Generates the RSA keypair to encrypted pem.
+        /// </summary>
+        /// <param name="KeySize">Size of the key.</param>
+        /// <param name="password">The password.</param>
+        /// <returns></returns>
         public static string GenerateRSAKeypairToEncryptedPEMEncoded(int KeySize, string password)
         {
             using (RSA rsa = RSA.Create())
@@ -38,6 +49,11 @@ namespace PCRNG_VP.exTPM
             }
         }
 
+        /// <summary>
+        ///Create keys for application.
+        /// </summary>
+        /// <param name="KeyOutputPath">The key output path.</param>
+        /// <exception cref="System.NotImplementedException">Assembly GUID is not found</exception>
         public static void TPMCreateKeysForApp(string KeyOutputPath)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -122,6 +138,12 @@ namespace PCRNG_VP.exTPM
             File.WriteAllText(key_metadata, KeyMetadataContents);
         }
 
+        /// <summary>
+        /// Computes the hash of the data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="hashingAlgorithm">The hashing algorithm.</param>
+        /// <returns></returns>
         public static string ComputeHash(byte[] data, HashingAlgorithm hashingAlgorithm)
         {
             using (var hasher = GetHashAlgorithm(hashingAlgorithm))
@@ -131,6 +153,11 @@ namespace PCRNG_VP.exTPM
             }
         }
 
+        /// <summary>
+        /// Gets the hash algorithm.
+        /// </summary>
+        /// <param name="hashAlgorithm">The hash algorithm.</param>
+        /// <returns></returns>
         private static HashAlgorithm GetHashAlgorithm(HashingAlgorithm hashAlgorithm)
         {
             return hashAlgorithm switch
@@ -147,7 +174,7 @@ namespace PCRNG_VP.exTPM
         {
             if (Directory.Exists(directoryPath))
             {
-                throw new FileNotFoundException(directoryPath+" not found!");
+                throw new DirectoryNotFoundException(directoryPath+" not found!");
             }
             string tarFilePath = directoryPath + ".tar";
 
@@ -165,6 +192,25 @@ namespace PCRNG_VP.exTPM
         
         public static void GzipFile(string inputFilePath, string outputFilePath)
         {
+            if (string.IsNullOrEmpty(inputFilePath))
+            {
+                throw new ArgumentException($"'{nameof(inputFilePath)}' cannot be null or empty.", nameof(inputFilePath));
+            }
+
+            if (string.IsNullOrEmpty(outputFilePath))
+            {
+                throw new ArgumentException($"'{nameof(outputFilePath)}' cannot be null or empty.", nameof(outputFilePath));
+            }
+
+            if (!File.Exists(inputFilePath))
+            {
+                throw new FileNotFoundException(inputFilePath + " not found!");
+            }
+            FileAttributes atrr = File.GetAttributes(inputFilePath);
+            if ((atrr != FileAttributes.None) && atrr.HasFlag(FileAttributes.Directory))
+            {
+                throw new NotSupportedException("Currently GZIP-ing a folder directly is not supported");
+            }
             using (FileStream inputFileStream = File.OpenRead(inputFilePath))
             using (FileStream outputFileStream = File.Create(outputFilePath))
             using (GZipStream gzipStream = new GZipStream(outputFileStream, CompressionMode.Compress))

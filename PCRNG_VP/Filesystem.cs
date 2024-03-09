@@ -7,6 +7,13 @@ namespace PCRNG_VP
 {
     public static class Filesystem
     {
+        /// <summary>
+        /// Finds the volume by label.
+        /// </summary>
+        /// <param name="label">The label.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">label - cannot be null or empty.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">Requested volume is not found!</exception>
         public static string FindVolumeByLabel(string label)
         {
             if (string.IsNullOrEmpty(label))
@@ -52,6 +59,17 @@ namespace PCRNG_VP
         }
 
 
+        /// <summary>
+        /// Mount or unmount volume on drive letter.
+        /// </summary>
+        /// <param name="driveLetter">The drive letter.</param>
+        /// <param name="volume">The volume.</param>
+        /// <param name="unmount">if set to <c>true</c> unmount.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// driveLetter  - cannot be null or empty.
+        /// or
+        /// volume - cannot be null or empty.
+        /// </exception>
         public static void MountOrUnmountVolumeOnDriveLetter(string driveLetter, string volume, bool unmount = false)
         {
             if (string.IsNullOrEmpty(driveLetter))
@@ -85,6 +103,17 @@ namespace PCRNG_VP
             process.StandardInput.WriteLine("exit");
             process.WaitForExit();
         }
+        /// <summary>
+        /// Mount or unmount volume on folder.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="volume">The volume.</param>
+        /// <param name="unmount">if set to <c>true</c> unmount.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// path - cannot be null or empty.
+        /// or
+        /// volume - cannot be null or empty.
+        /// </exception>
         public static void MountOrUnmountVolumeOnFolder(string path, string volume, bool unmount = false)
         {
             if (string.IsNullOrEmpty(path))

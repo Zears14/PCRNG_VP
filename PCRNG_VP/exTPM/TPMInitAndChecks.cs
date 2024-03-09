@@ -10,6 +10,10 @@ namespace PCRNG_VP.exTPM
 {
     public static class TPMInitAndChecks
     {
+        /// <summary>
+        /// Does the initialize and checks.
+        /// </summary>
+        /// <exception cref="NotImplementedException">Assembly GUID is not found</exception>
         public static void DoInitAndChecks()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -50,6 +54,7 @@ namespace PCRNG_VP.exTPM
             if (!File.Exists(app_metadata))
             {
                 //TODO: Create and Fill the app_metadata.json
+
                 Log("App TPM app_metadata.json not found, creating...", extra: ": TPMSETUP", severity: LogLevel.WARN);
 
                 using (FileStream fs = File.Create(app_metadata))
