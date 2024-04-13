@@ -1,6 +1,8 @@
-﻿using Spectre.Console;
+﻿using PCRNG_VP.exTPM.Test;
+using Spectre.Console;
 using System;
 using System.IO;
+using System.IO.Pipes;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using static PCRNG_VP.exTPM.TPMLogger;
@@ -67,6 +69,12 @@ namespace PCRNG_VP.exTPM
                 Log("App TPM Private Keys not found, creating...", extra: ": TPMSETUP", severity: LogLevel.WARN);
                 Crypto.TPMCreateKeysForApp(privateKeyPem);
             }
+#if DEBUG
+            Log("Begin Encryption/Decryption test", extra: ": DEBUG-TIME-POST-TPMSETUP", severity: LogLevel.DEBUG);
+            Tests.EncryptDecryptVerifyTest();
+            Console.ReadKey();
+            Log("DEBUG-TIME-POST-TPMSETUP complete, Resuming...", extra: ": DEBUG-TIME-POST-TPMSETUP", severity: LogLevel.DEBUG);
+#endif
         }
     }
 }

@@ -26,5 +26,15 @@ namespace PCRNG_VP.exTPM
             SHA256,
             SHA512
         }
+
+        public class EncryptedData
+        {
+            public string? Nonce { get; set; }
+            public string? CipherText { get; set; }
+            public string? Tag { get; set; }
+            public string? TagBase64Hash { get; set; }
+            public string? TagHash { get; set; }
+            public string? Timestamp { get; set; }
+        }
     }
 }
