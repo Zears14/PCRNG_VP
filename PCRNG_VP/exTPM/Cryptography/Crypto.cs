@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using K4os.Compression.LZ4;
 using System.Security.AccessControl;
-namespace PCRNG_VP.exTPM
+namespace PCRNG_VP.exTPM.Cryptography
 {
     public static class Crypto
     {
@@ -57,7 +57,7 @@ namespace PCRNG_VP.exTPM
         ///Create keys for application.
         /// </summary>
         /// <param name="KeyOutputPath">The key output path.</param>
-        /// <exception cref="System.NotImplementedException">Assembly GUID is not found</exception>
+        /// <exception cref="NotImplementedException">Assembly GUID is not found</exception>
         public static void TPMCreateKeysForApp(string KeyOutputPath)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -121,7 +121,7 @@ namespace PCRNG_VP.exTPM
                 AnsiConsole.MarkupLine("[red]Passwords do not match. Please try again.[/]");
             }
 
-            string key = exTPM.Crypto.GenerateRSAKeypairToEncryptedPEMEncoded(keySize, password);
+            string key = GenerateRSAKeypairToEncryptedPEMEncoded(keySize, password);
             using (FileStream fs = File.Create(KeyOutputPath))
             {
                 fs.Close();
@@ -133,8 +133,8 @@ namespace PCRNG_VP.exTPM
             }
             KeyMetadata keyMetadata = new KeyMetadata
             {
-                KeyType = Types.KeyType.Asymmetric, // Example: Set the KeyType to Asymmetric
-                KeyAlgorithm = Types.KeyAlgorithm.RSA, // Example: Set the KeyAlgorithm to RSA
+                KeyType = KeyType.Asymmetric, // Example: Set the KeyType to Asymmetric
+                KeyAlgorithm = KeyAlgorithm.RSA, // Example: Set the KeyAlgorithm to RSA
                 KeySize = keySize, // Convert keySize to string and set it as KeySize
                 KeyFingerprint = "SHA256:" + ComputeHash(Encoding.UTF8.GetBytes(key), HashingAlgorithm.SHA256) // Calculate the fingerprint and set it
             };
@@ -212,7 +212,7 @@ namespace PCRNG_VP.exTPM
 
             if (!File.Exists(appKeyPath))
             {
-                throw new FileNotFoundException(KeyName + " does not exist on "+keyPath);
+                throw new FileNotFoundException(KeyName + " does not exist on " + keyPath);
             }
             KeyMetadata? keyMetadata = JsonConvert.DeserializeObject<KeyMetadata>(File.ReadAllText(key_metadata));
 
@@ -291,7 +291,7 @@ namespace PCRNG_VP.exTPM
             if (File.Exists(Path.Combine(keyPath, "AES_MASTER_KEY_IMPORTANT_DO_NOT_DELETE")))
             {
                 key = TPMRetrieveKeySecurely("AES_MASTER_KEY_IMPORTANT_DO_NOT_DELETE");
-            } 
+            }
             else
             {
                 key = Rfc2898DeriveBytes.Pbkdf2(GenerateRandomBytes(32), GenerateRandomBytes(32), 10000, HashAlgorithmName.SHA256, AesKeySize);
@@ -354,11 +354,11 @@ namespace PCRNG_VP.exTPM
             {
                 throw new FormatException("The file cannot be decrypted as it is not in the correct format.");
             }
-            if(encryptedDataInformation.Nonce == null)
+            if (encryptedDataInformation.Nonce == null)
             {
                 throw new FormatException("The file cannot be decrypted as it is not in the correct format.");
             }
-            if(encryptedDataInformation.TagBase64Hash == null)
+            if (encryptedDataInformation.TagBase64Hash == null)
             {
                 throw new FormatException("The file cannot be decrypted as it is not in the correct format.");
             }
@@ -444,7 +444,7 @@ namespace PCRNG_VP.exTPM
                 throw new FileNotFoundException(inputFilePath + " not found!");
             }
             FileAttributes atrr = File.GetAttributes(inputFilePath);
-            if ((atrr != FileAttributes.None) && atrr.HasFlag(FileAttributes.Directory))
+            if (atrr != FileAttributes.None && atrr.HasFlag(FileAttributes.Directory))
             {
                 throw new NotSupportedException("Currently GZIP-ing a folder directly is not supported");
             }

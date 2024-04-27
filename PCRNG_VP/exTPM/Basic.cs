@@ -33,8 +33,6 @@ namespace PCRNG_VP.exTPM
             Directory.CreateDirectory(SKSMountDir);
             Directory.CreateDirectory(CNTRLMountDir);
 
-
-
             Task<string?> sksTask = Task.Run(() =>
             {
                 try

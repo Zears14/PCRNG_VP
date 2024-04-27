@@ -1,4 +1,5 @@
-﻿using PCRNG_VP.exTPM.Test;
+﻿using PCRNG_VP.exTPM.Cryptography;
+using PCRNG_VP.exTPM.Test;
 using Spectre.Console;
 using System;
 using System.IO;

@@ -1,4 +1,5 @@
 ﻿using Force.Crc32;
+using PCRNG_VP.exTPM.Cryptography;
 using Spectre.Console;
 using System.Diagnostics;
 using System.IO;
@@ -52,7 +53,7 @@ namespace PCRNG_VP.exTPM.Test
                 uint File2Crc = Crc32Algorithm.Compute(File2Content);
                 return File1Crc == File2Crc;
             }
-
+            
         }
     }
 }
