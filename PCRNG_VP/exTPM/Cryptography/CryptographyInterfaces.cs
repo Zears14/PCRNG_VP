@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using static PCRNG_VP.exTPM.Types;
-
-namespace PCRNG_VP.exTPM.Cryptography
+﻿namespace PCRNG_VP.exTPM.Cryptography
 {
     public interface IKeyGenerationProvider
     {
@@ -23,10 +15,10 @@ namespace PCRNG_VP.exTPM.Cryptography
     {
 
     }
-    public interface IEncryptionProvider
+    public interface ICipherProvider
     {
-        public abstract byte[] Encrypt(byte[] dataTobeEncrypted);
-        public abstract byte[] Decrypt(byte[] dataTobeDecrypted);
+        public abstract byte[] EncryptToPVEFEncoded(byte[] dataTobeEncrypted);
+        public abstract byte[] DecryptFromPVEF(byte[] dataTobeDecrypted);
     }
     public interface IHashingProvider
     {

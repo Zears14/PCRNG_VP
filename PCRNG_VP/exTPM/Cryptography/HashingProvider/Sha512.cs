@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace PCRNG_VP.exTPM.Cryptography.Hash
+namespace PCRNG_VP.exTPM.Cryptography.HashingProvider
 {
-    public class Sha512HashProvider : IHashingProvider
+    public class Sha512 : IHashingProvider
     {
-        public Sha512HashProvider() { }
+        public Sha512() { }
 
         public string ComputeHash(byte[] data)
         {

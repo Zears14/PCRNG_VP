@@ -1,11 +1,11 @@
 ﻿using Force.Crc32;
 using System;
 
-namespace PCRNG_VP.exTPM.Cryptography.Hash.Unsecure
+namespace PCRNG_VP.exTPM.Cryptography.HashingProvider.UnsecureHash
 {
-    public class Crc32HashProvider : IHashingProvider
+    public class Crc32 : IHashingProvider
     {
-        public Crc32HashProvider() { }
+        public Crc32() { }
         public string ComputeHash(byte[] data)
         {
             uint hash = Crc32Algorithm.Compute(data);

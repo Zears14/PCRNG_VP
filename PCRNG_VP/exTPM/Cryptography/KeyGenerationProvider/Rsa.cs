@@ -1,13 +1,13 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace PCRNG_VP.exTPM.Cryptography
+namespace PCRNG_VP.exTPM.Cryptography.KeyGeneration
 {
-    public class RsaKeyGenerationProvider : IAsymmetricKeyGenerator
+    public class Rsa : IAsymmetricKeyGenerator
     {
-        public RsaKeyGenerationProvider(int KeySize)
+        public Rsa(int KeySize)
         {
-            this.AlgorithmName = "RSA";
+            AlgorithmName = "RSA";
             this.KeySize = KeySize;
         }
         public string AlgorithmName { get; }

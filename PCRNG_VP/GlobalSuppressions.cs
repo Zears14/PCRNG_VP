@@ -10,4 +10,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Minor Code Smell", "S101:Types should be named in PascalCase", Justification = "<Pending>", Scope = "type", Target = "~T:PCRNG_VP.exTPM.TPMLogger")]
 [assembly: SuppressMessage("Minor Code Smell", "S1104:Fields should not have public accessibility", Justification = "<Pending>", Scope = "member", Target = "~F:PCRNG_VP.ProgramLogger.Logs")]
 [assembly: SuppressMessage("Minor Code Smell", "S2386:Mutable fields should not be \"public static\"", Justification = "<Pending>", Scope = "type", Target = "~T:PCRNG_VP.ProgramLogger")]
-[assembly: SuppressMessage("Minor Code Smell", "S1450:Private fields only used as local variables in methods should become local variables", Justification = "<Pending>", Scope = "type", Target = "~T:PCRNG_VP.exTPM.Cryptography.KeyStoreProvider")]
+[assembly: SuppressMessage("Minor Code Smell", "S1450:Private fields only used as local variables in methods should become local variables", Justification = "<Pending>", Scope = "type", Target = "~T:PCRNG_VP.exTPM.Cryptography.KeyStoreProvider.ExternalKeyStore")]

@@ -5,9 +5,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PCRNG_VP.exTPM.Cryptography
+namespace PCRNG_VP.exTPM.Cryptography.KeyStoreProvider
 {
-    public class KeyStoreProvider : IKeyStoreProvider
+    public class ExternalKeyStore : IKeyStoreProvider
     {
         private readonly string sksMountDir;
         private readonly string appTPMpath;
@@ -16,7 +16,7 @@ namespace PCRNG_VP.exTPM.Cryptography
         private readonly string KeyMetadataPath;
         private readonly KeyMetadata? KeyMetadataValue;
 
-        public KeyStoreProvider(string baseDirectory)
+        public ExternalKeyStore(string baseDirectory)
         {
             // Initialize the rest during construction for better efficiency
             sksMountDir = Path.Combine(baseDirectory, "SKS");

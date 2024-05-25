@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace PCRNG_VP.exTPM.Cryptography.Hash
+namespace PCRNG_VP.exTPM.Cryptography.HashingProvider
 {
-    public class Sha256HashProvider : IHashingProvider
+    public class Sha256 : IHashingProvider
     {
-        public Sha256HashProvider() { }
+        public Sha256() { }
         public string ComputeHash(byte[] data)
         {
             using (SHA256 hasher = SHA256.Create())
