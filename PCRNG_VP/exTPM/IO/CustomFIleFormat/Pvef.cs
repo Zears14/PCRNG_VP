@@ -1,18 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace PCRNG_VP.exTPM.IO.CustomFIleFormat
+namespace PCRNG_VP.exTPM.IO.CustomFileFormat
 {
+    /// <summary>
+    /// Represents a custom file format for PVEF (Picrypt Vault Encrypted File) encoding and parsing.
+    /// </summary>
     public class Pvef : ICustomFileFormat
     {
         private const string Header = "PVEF";
         private const byte Version = 1;
         private const int NonceSize = 16;
         private const int TagSize = 16;
+
+        /// <summary>
+        /// Encodes the given ciphertext, nonce, and tag into the PVEF format.
+        /// </summary>
+        /// <param name="data">An array containing three byte arrays: ciphertext, nonce, and tag.</param>
+        /// <returns>A byte array representing the encoded data in PVEF format.</returns>
+        /// <exception cref="ArgumentException">Thrown if the input does not contain exactly three byte arrays, or if the nonce or tag size is incorrect.</exception>
         public byte[] Encode(params byte[][] data)
         {
             if (data.Length != 3)
@@ -23,18 +30,21 @@ namespace PCRNG_VP.exTPM.IO.CustomFIleFormat
             byte[] ciphertext = data[0];
             byte[] nonce = data[1];
             byte[] tag = data[2];
+
             if (nonce.Length != NonceSize)
             {
                 throw new ArgumentException($"Nonce must be {NonceSize} bytes.");
             }
+
             if (tag.Length != TagSize)
             {
                 throw new ArgumentException($"Tag must be {TagSize} bytes.");
             }
+
             using (var memoryStream = new MemoryStream())
             {
                 // Write the header
-                memoryStream.Write(Encoding.ASCII.GetBytes(Header), 0, 4);
+                memoryStream.Write(Encoding.ASCII.GetBytes(Header), 0, Header.Length);
 
                 // Write the version
                 memoryStream.WriteByte(Version);
@@ -54,6 +64,13 @@ namespace PCRNG_VP.exTPM.IO.CustomFIleFormat
                 return memoryStream.ToArray();
             }
         }
+
+        /// <summary>
+        /// Parses the given byte array in PVEF format into its components: ciphertext, nonce, and tag.
+        /// </summary>
+        /// <param name="data">The byte array in PVEF format.</param>
+        /// <returns>An array of byte arrays containing the ciphertext, nonce, and tag.</returns>
+        /// <exception cref="InvalidDataException">Thrown if the input data has an invalid header or unsupported version.</exception>
         public byte[][] Parse(byte[] data)
         {
             using (var memoryStream = new MemoryStream(data))
@@ -61,7 +78,7 @@ namespace PCRNG_VP.exTPM.IO.CustomFIleFormat
                 using (var binaryReader = new BinaryReader(memoryStream))
                 {
                     // Read and validate the header
-                    string header = Encoding.ASCII.GetString(binaryReader.ReadBytes(4));
+                    string header = Encoding.ASCII.GetString(binaryReader.ReadBytes(Header.Length));
                     if (header != Header)
                     {
                         throw new InvalidDataException("Invalid file header.");
