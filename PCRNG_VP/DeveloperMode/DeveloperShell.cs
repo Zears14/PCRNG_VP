@@ -14,7 +14,8 @@ namespace PCRNG_VP.DeveloperMode
             // Register commands
             RegisterCommand("get_logs_on_mem", new GetLogsOnMemoryCommand());
             RegisterCommand("help", new HelpCommand());
-            RegisterCommand("create_memory_dump", new MemoryDumpCommand());
+            RegisterCommand("mem_dmp", new MemoryDumpCommand());
+            RegisterCommand("clear", new ClearCommand());
         }
 
         public void StartShell()
@@ -69,13 +70,13 @@ namespace PCRNG_VP.DeveloperMode
             {
                 if (command != null)
                 {
-                    string result = command.Execute(commandArgs);   
+                    string result = command.Execute(commandArgs);
                     AnsiConsole.MarkupLine("[bold blue]{0}[/]", Markup.Escape(result));
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine($"[bold red]Command '{commandName}' not found.[/]");
+                AnsiConsole.MarkupLine($"[bold red]Command '{Markup.Escape(commandName)}' not found.[/]");
             }
         }
         
