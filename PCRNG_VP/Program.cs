@@ -3,6 +3,7 @@ using Console = Colorful.Console;
 using Spectre.Console;
 using PCRNG_VP.exTPM;
 using static PCRNG_VP.ProgramLogger;
+using PCRNG_VP.DeveloperMode;
 
 namespace PCRNG_VP
 {
@@ -18,16 +19,29 @@ namespace PCRNG_VP
             try
             {
                 ProgramInit.DoInit();
-                Console.Clear();
-                string userchoices = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("[bold]Welcome to[/][bold cyan1] Picrypt Next[/][bold] Vault App (PCNRNG_VP)![/]")
-                            .PageSize(3)
-                            .AddChoices("Start", "Exit"));
 
-                if (userchoices != null && userchoices == "Start")
+                while (true)
                 {
-                    Program.Start();
+                Console.Clear();
+                    string userchoices = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("[bold]Welcome to[/][bold cyan1] Picrypt Next[/][bold] Vault App (PCNRNG_VP)![/]")
+                                .PageSize(3)
+                                .AddChoices("Start", "Exit", "Developer Mode"));
+
+                    if (userchoices != null && userchoices == "Start")
+                    {
+                        Program.Start();
+                    }
+                    if (userchoices != null && userchoices == "Developer Mode")
+                    {
+                        DeveloperShell devShell = new DeveloperShell();
+                        devShell.StartShell();
+                    }
+                    if(userchoices != null && userchoices == "Exit")
+                    {
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
